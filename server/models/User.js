@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true, // This is the only unique index defined in code
     match: [/.+@.+\..+/, 'Please enter a valid email address']
   },
   password: {
