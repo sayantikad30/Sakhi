@@ -3,10 +3,7 @@ import axios from 'axios';
 import './index.css'; // Ensure Tailwind CSS is imported
 
 // Base URL for your backend API
-// client/src/App.js
-// ...
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
-// ...
+const API_BASE_URL = 'http://localhost:5000/api';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -33,9 +30,9 @@ function App() {
       nav: {
         home: 'Home',
         periodStories: 'First Period Stories',
-        menstrualTracker: 'Period Tracker',
+        menstrualTracker: 'Menstrual Cycle Tracker',
         quiz: 'Quiz',
-        boysSection: 'For Male Partners',
+        boysSection: 'For Partners',
         blogSection: 'Blog Section',
         login: 'Login',
         signup: 'Sign Up',
@@ -64,7 +61,7 @@ function App() {
         storytellerName: 'Your Name (Optional)',
         submitStory: 'Submit Story',
         noStories: 'No stories yet. Be the first to share!',
-        storiesHeading: 'First Period Stories',
+        storiesHeading: 'Period Stories',
         loginToPost: 'Please log in to share your story.'
       },
       menstrualTracker: {
@@ -113,8 +110,8 @@ function App() {
         ],
       },
       boysSection: {
-        heading: 'For Males: Understanding and Supporting Her',
-        intro: 'Understanding the menstrual cycle is crucial for male partners to be supportive and empathetic towards girls and women in their lives. Here\'s how you can better understand and offer comfort during menstruation:',
+        heading: 'For Boys: Understanding and Supporting Her',
+        intro: 'Understanding the menstrual cycle is crucial for boys to be supportive and empathetic towards girls and women in their lives. Here\'s how you can better understand and offer comfort during menstruation:',
         point1Title: 'Educate Yourself',
         point1Content: 'Learn the basics of the menstrual cycle. Knowing what\'s happening biologically can demystify the process and help you understand why she might be experiencing certain symptoms. Knowledge is the first step towards empathy.',
         point1Link: 'https://www.girlshealth.gov/body/period/whatisit.html',
@@ -195,7 +192,7 @@ function App() {
         nextPeriodDate: 'आपका अगला मासिक धर्म अनुमानित है:',
         ovulationDate: 'आपकी अनुमानित ओव्यूलेशन तिथि है:',
         warning: 'जितनी जल्दी हो सके अपनी स्त्री रोग विशेषज्ञ से मिलें।',
-        loginToTrack: 'अपने मासिक धर्म चक्र को ट्रैक करने के लिए कृपया लॉग इन करें।'
+        loginToTrack: 'अपने मासिक धर्म चक्र को ट्रैक करने के लिए कृपया लॉग इन करें.'
       },
       quiz: {
         heading: 'प्रश्नोत्तरी का समय!',
@@ -253,8 +250,8 @@ function App() {
       },
       blogSection: {
         heading: 'ब्लॉग पोस्ट',
-        titleLabel: 'ब्लॉग शीर्षक:',
-        contentLabel: 'ब्लॉग सामग्री:',
+        titleLabel: 'Blog Title:',
+        contentLabel: 'Blog Content:',
         postBlog: 'पोस्ट ब्लॉग', // Corrected 'Post Blog' to 'पोस्ट ब्लॉग' for consistency
         noBlogs: 'अभी तक कोई ब्लॉग पोस्ट नहीं। पोस्ट करने वाले पहले व्यक्ति बनें!',
         loginToPost: 'ब्लॉग पोस्ट करने के लिए कृपया लॉग इन करें.'
@@ -289,7 +286,7 @@ function App() {
 
   // --- Auth Functions ---
   const handleAuth = async (isRegister) => {
-    setMessage('');
+    setMessage(''); // Clear previous messages
     try {
       const url = isRegister ? `${API_BASE_URL}/auth/register` : `${API_BASE_URL}/auth/login`;
       const response = await axios.post(url, { email, password }, {
@@ -299,39 +296,34 @@ function App() {
       });
 
       if (response.headers['content-type'] && !response.headers['content-type'].includes('application/json')) {
-        // If the response is not JSON, it might be an HTML error page.
         const textResponse = await response.data;
         setMessage(`Server error or unexpected response type. Please check backend server status. Response: ${textResponse.substring(0, 100)}...`);
         return;
       }
 
-      const data = response.data; // data is already parsed by axios
+      const data = response.data;
       if (data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
-        localStorage.setItem('userEmail', data.email); // Store user's email
+        localStorage.setItem('userEmail', data.email);
         setToken(data.token);
         setUserId(data.userId);
-        setUserEmail(data.email); // Set user's email
+        setUserEmail(data.email);
         setLoggedIn(true);
         setMessage(data.message || 'Authentication successful!');
         setEmail('');
         setPassword('');
-        setActiveSection('home'); // Go to home after login/signup
+        setActiveSection('home');
       } else {
         setMessage(data.message || 'Authentication failed.');
       }
     } catch (error) {
       console.error('Authentication error:', error);
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         setMessage(error.response.data.message || 'Authentication failed. Please check your credentials or server.');
       } else if (error.request) {
-        // The request was made but no response was received
         setMessage('No response from server. Please ensure the backend is running and accessible.');
       } else {
-        // Something else happened in setting up the request that triggered an Error
         setMessage('Error during authentication request. ' + error.message);
       }
     }
@@ -358,6 +350,17 @@ function App() {
       setUserEmail(localStorage.getItem('userEmail'));
     }
   }, []);
+
+  // Effect to clear messages after 3 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 3000); // 3000 milliseconds = 3 seconds
+      return () => clearTimeout(timer); // Clean up the timer if component unmounts or message changes
+    }
+  }, [message]); // Re-run this effect whenever 'message' changes
+
 
   // --- Data Fetching Functions (Memoized with useCallback) ---
   const fetchStories = useCallback(async () => {
@@ -579,6 +582,41 @@ function App() {
     setIsTyping(true);
   }, [currentLanguage]); // Dependency: currentLanguage
 
+  // --- Dynamic Document Title Effect ---
+  useEffect(() => {
+    const baseTitle = t('appTitle'); // "Sakhi" or "सखी"
+    let sectionName = '';
+
+    switch (activeSection) {
+      case 'home':
+        sectionName = t('nav.home');
+        break;
+      case 'periodStories':
+        sectionName = t('nav.periodStories');
+        break;
+      case 'menstrualTracker':
+        sectionName = t('nav.menstrualTracker');
+        break;
+      case 'quiz':
+        sectionName = t('nav.quiz');
+        break;
+      case 'boysSection':
+        sectionName = t('nav.boysSection');
+        break;
+      case 'blogSection':
+        sectionName = t('nav.blogSection');
+        break;
+      default:
+        sectionName = ''; // Fallback
+    }
+
+    if (sectionName && activeSection !== 'home') {
+      document.title = `${sectionName} - ${baseTitle}`;
+    } else {
+      document.title = baseTitle; // For home, just "Sakhi"
+    }
+  }, [activeSection, currentLanguage, t]); // Dependencies: activeSection, currentLanguage, and t (since t depends on currentLanguage)
+
 
   // Floating phrases animation
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
@@ -704,7 +742,7 @@ function App() {
               {/* Pregnancy Care */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
                 <img
-                  src="/images/pregnant1.jpg" // Local Image Path Example
+                  src="/images/pregnancy-care.jpg" // Local Image Path Example
                   alt="Pregnancy Care"
                   className="w-full h-40 object-cover rounded-md mb-4"
                   onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x250/FCE4EC/9C27B0?text=Pregnancy+Care" }}
@@ -724,7 +762,7 @@ function App() {
               {/* PCOD */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
                 <img
-                  src="/images/pcod2.jpg" // Local Image Path Example
+                  src="/images/pcod-info.jpg" // Local Image Path Example
                   alt="PCOD Understanding"
                   className="w-full h-40 object-cover rounded-md mb-4"
                   onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x250/FCE4EC/9C27B0?text=PCOD+Info" }}
@@ -744,7 +782,7 @@ function App() {
               {/* Fertility Insights */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
                 <img
-                  src="/images/fertility1.webp" // Local Image Path Example
+                  src="/images/fertility-insights.jpg" // Local Image Path Example
                   alt="Fertility Insights"
                   className="w-full h-40 object-cover rounded-md mb-4"
                   onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x250/FCE4EC/9C27B0?text=Fertility+Insights" }}
@@ -764,7 +802,7 @@ function App() {
               {/* Menstrual Hygiene */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
                 <img
-                  src="/images/period1.png" // Local Image Path Example
+                  src="/images/menstrual-hygiene.jpg" // Local Image Path Example
                   alt="Menstrual Hygiene"
                   className="w-full h-40 object-cover rounded-md mb-4"
                   onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x250/FCE4EC/9C27B0?text=Menstrual+Hygiene" }}
@@ -784,7 +822,7 @@ function App() {
               {/* Endometriosis Awareness */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
                 <img
-                  src="/images/endo1.avif" // Local Image Path Example
+                  src="/images/endometriosis.jpg" // Local Image Path Example
                   alt="Endometriosis Awareness"
                   className="w-full h-40 object-cover rounded-md mb-4"
                   onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x250/FCE4EC/9C27B0?text=Endometriosis" }}
@@ -1106,3 +1144,4 @@ function App() {
 }
 
 export default App;
+
