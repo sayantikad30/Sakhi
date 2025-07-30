@@ -1,7 +1,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
-const mongoose = require = require('mongoose'); // Corrected typo: 'require = require' to 'require'
+const mongoose = require('mongoose'); // Corrected typo
 const cors = require('cors'); // For handling Cross-Origin Resource Sharing
 
 // Import your route files
@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
