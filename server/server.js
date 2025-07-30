@@ -1,7 +1,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require = require('mongoose'); // Corrected typo: 'require = require' to 'require'
 const cors = require('cors'); // For handling Cross-Origin Resource Sharing
 
 // Import your route files
@@ -52,6 +52,13 @@ app.use('/api/tracker', trackerRoutes); // Handles menstrual tracker data
 app.get('/', (req, res) => {
   res.send('Sakhi Backend API is running!');
 });
+
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 
 
 // Start the server
