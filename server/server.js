@@ -11,7 +11,8 @@ const blogRoutes = require('./routes/blogs');
 const trackerRoutes = require('./routes/tracker');
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Use port from .env or default to 5000
+// Ensure PORT explicitly uses Render's assigned port, or defaults to 5000 for local dev
+const PORT = process.env.PORT || 5000; 
 
 // --- CORS Configuration ---
 // This middleware allows your frontend (on a different domain/port) to access your backend.
