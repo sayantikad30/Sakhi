@@ -3,7 +3,8 @@ import axios from 'axios';
 import './index.css'; // Ensure Tailwind CSS is imported
 
 // Base URL for your backend API
-const API_BASE_URL = 'http://localhost:5000/api';
+// This line is crucial: it reads from the environment variable set on Render.
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -182,7 +183,7 @@ function App() {
         submitStory: 'कहानी जमा करें',
         noStories: 'अभी तक कोई कहानी नहीं। साझा करने वाले पहले व्यक्ति बनें!',
         storiesHeading: 'पीरियड की कहानियाँ',
-        loginToPost: 'अपनी कहानी साझा करने के लिए कृपया लॉग इन करें।'
+        loginToPost: 'अपनी कहानी साझा करने के लिए कृपया लॉग इन करें.'
       },
       menstrualTracker: {
         heading: 'मासिक धर्म ट्रैकर',
@@ -261,7 +262,6 @@ function App() {
         'स्वास्थ्य और कल्याण में आपका विश्वसनीय साथी।',
         'हर चक्र को समझना, हर यात्रा का समर्थन करना।',
         'वर्जनाओं को तोड़ना, आत्मविश्वास का निर्माण करना।',
-        'ज्ञान शक्ति है, खासकर आपके शरीर के बारे में।',
       ],
       userIdDisplay: 'यूजर आईडी के रूप में लॉग इन:',
     },
