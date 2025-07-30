@@ -12,9 +12,9 @@ const trackerRoutes = require('./routes/tracker');
 
 const app = express();
 
-// Set the PORT to Render's assigned port, or fallback to 5000 for local development
+// Set the PORT to Render's assigned port, or fallback to 3001 for local development
 // Render typically sets process.env.PORT, so this ensures it's used.
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000; 
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001; // Changed fallback port to 3001
 
 // --- CORS Configuration ---
 // This middleware allows your frontend (on a different domain/port) to access your backend.
@@ -62,11 +62,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-
-
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
